@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    body{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #030b17;
+        
+    }
+#query{
+  
+    width: 400px;
+    height: 30px;
+   display: block;
+   margin: auto;
+   margin-top: 10px;
+   border-radius: 10px;
+   color: black;
+   font-size: 30px;
+   /* text-align: center; */
+}
+        #movies{
+            border: 1px solid teal;
+            height: 200px;
+            width: 400px;
+           margin: auto;
+            border-top: none;
+             overflow: scroll;
+             color: white;
+        }
+        #showData{
+            
+            width: 30%;
+            border: 2px solid white;
+            margin: auto;
+            margin-top: 10px;
+            color: wheat;
+            font-weight: 400;
+            font-size: 20px;
+            text-align: center;
+        }
+      .tranding{
+        margin: 20px;
+        font-size: 40px;
+        color: white;
+        text-decoration: none;
+      }
+
+      .tranding a {
+        /* text-decoration: none; */
+        color: wheat;
+      }
+
+    </style>
+</head>
+<body>
+    <!-- <h1>hotstar</h1> -->
+    <div class="tranding"><a href="tranding.html">Tranding Movies</a></div>
+    <input oninput="debounce(main,1000)" type="text" id="query">
+    <div id="movies"></div>
+    <div id="showData"></div>
+   
+</body>
+</html>
+
+<script>
+    let movieDiv = document.querySelector("#movies")
+    let id ;
+
+
+    async function searchMovies(){
+        // https://www.omdbapi.com/?apikey=c1effb57&s=${q}
+try{
+    const query = document.querySelector("#query").value ;
+
+let res = await fetch(`https://www.omdbapi.com/?apikey=c1effb57&s=${query}`)
+
+let data = await res.json();
+console.log("data:", data)
+let movies = data.Search;
+return movies;
+
+// appendMovies(movies)
+
+}catch(err){
+    console.log("err:",err)
+}
+        }///  async searchMovies function end here
+
+        function appendMovies(movies){
+            // optimization 1 
+            // if(movies==undefined){
+            //     return false;
+            // }
+
+            // show image, Year of release, Poster, imdb rating, cast ( if possible ) etc.
+            movieDiv.innerHTML = null;
+            movies.forEach(function(el){
+                let p = document.createElement("p")
+                p.innerText = el.Title;
+                p.setAttribute("id","showMovie")
+                p.addEventListener("click",function(){
+                    showMovie(el)
+                })
+                movieDiv.append(p)
+            })
+
+        }//
+
+       function   showMovie(el){
+
+      let showData = document.querySelector("#showData")
+      showData.innerHTML = null
+          let poster = document.createElement("img")
+          poster.src  = el.Poster;
+          let title = document.createElement("p")
+          title.innerText = el.Title;
+          let type = document.createElement("p")
+          type.innerText = el.Type;
+          let year = document.createElement("p")
+          year.innerText = el.Year;
+          showData.append(poster,title,type,year)
+
+       } 
+
+        async function main(){
+            let data = await searchMovies();
+            if(data=== undefined){
+                return false;
+            }
+            appendMovies(data )
+        }
+// Here start debouncing 
+function debounce(main,delay){
+    if(id){
+        clearTimeout(id);
+    }
+    id = setTimeout(function(){
+        main()
+    },delay)  //setTimeout here
+}/// debounct functtion end here
+
+/// note a -> debounce -> main('a')-.>
+//av - > debounce -> main("av")--> id of main("a")--clearTimeout(id)
+//avn - > debounce -> main("avn")--> id of main("av")--clearTimeout(id)
+
+</script>

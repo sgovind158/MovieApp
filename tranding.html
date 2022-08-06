@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tranding Page</title>
+    <style>
+        body{
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        #TrandingMovie{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            grid-template-rows: auto;
+            gap: 30px
+            ;
+           border: 2px solid teal;
+           color: white;
+           text-align: center;
+           font-size: 50px;
+        }
+        img{
+            width: 300px;
+        }
+        #box{
+            margin-top: 30px;
+            box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+        }
+
+        .tranding{
+        margin: 10px;
+        font-size: 40px;
+        color: white;
+        text-decoration: none;
+      }
+
+      .tranding a {
+        /* text-decoration: none; */
+        color: wheat;
+      }
+
+    </style>
+</head>
+<body>
+    <div class="tranding"><a href="index.html">SerchMovie</a></div>
+    <div id="TrandingMovie"></div>
+    
+</body>
+</html>
+
+<script>
+// https://api.themoviedb.org/3/trending/movie/day?api_key=59379f585f885ac25330c293cedeb230
+
+let trandingDiv = document.querySelector("#TrandingMovie")
+
+let id;
+
+searchMovies()
+async function searchMovies(){
+        // https://www.omdbapi.com/?apikey=c1effb57&s=${q}
+try{
+    // const query = document.querySelector("#query").value ;
+
+let res = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=59379f585f885ac25330c293cedeb230`)
+
+let data = await res.json();
+console.log(data)
+let trandingData = data.results
+// console.log("data: this is tranding data", trandingData)
+
+appendData(trandingData)
+// let movies = data.Search;
+// return movies;
+
+// appendMovies(movies)
+
+}catch(err){
+    console.log("err:",err)
+}
+        }///  
+
+function appendData(data){
+    // console.log("append data",data)
+    data.forEach(function(element){
+        let box = document.createElement("div")
+        box.setAttribute("id","box")
+        // poster_path
+        // release_date
+        // title
+        let title = document.createElement("p")
+        title.innerText = element.title
+        var img = document.createElement("img");
+    img.src= `https://image.tmdb.org/t/p/w500/${element.poster_path}`
+
+    let date = document.createElement("p")
+    date.innerText = element.release_date;
+
+        box.append(img,title ,date)
+        trandingDiv.append(box)
+    })
+}
+
+</script>
